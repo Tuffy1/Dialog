@@ -36,6 +36,13 @@ define(
 						that.hide();
 						resolve(e);
 					})
+					$(document).mouseup(function(e){	//点击对话框外面也关闭对话框
+  						var _con = $('.dialog-dropback');   // 设置目标区域
+  						if(!_con.is(e.target) && _con.has(e.target).length === 0){ //不能是目标本身，也不能是目标元素的子元素
+    						that.hide();
+							reject(e);
+  						}
+					});
 				})
 			},
 			destory: function() {
@@ -45,7 +52,11 @@ define(
 				$('.dialog-dropback').remove();
 			},
 			hide: function() {
-				this.destory();
+				destory = this.destory;
+				$('.dialog-dropback').addClass('out');
+				$('.dialog-dropback').on("webkitAnimationEnd", function() {
+    				destory();	//这个地方this指向$('.dialog-dropback')，不能直接调用this.destory
+				})
 			}
 		}
 		return function(config) {
